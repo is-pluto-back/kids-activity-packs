@@ -7,11 +7,11 @@
 <body class="aarya" data-kid="aarya">
 <header class="hero"><a class="home" href="./">← All packs</a><h1>🦄 Aarya's Activity Pack</h1><p>Jr Kindergarten • Unicorns • Tracing • Letters • Counting • Shapes</p><p id="progress"></p></header>
 <main class="wrap">
-<nav class="tabs" role="tablist"><button type="button" data-tab="exam-tab" role="tab">📝 Exams</button><button type="button" data-tab="original" role="tab">📄 Original Pack</button></nav>
+<nav class="tabs" role="tablist"><button type="button" data-tab="exam-tab" role="tab">📝 Exam</button><button type="button" data-tab="history-tab" role="tab">📚 My Exams</button><button type="button" data-tab="original" role="tab">📄 Original Pack</button></nav>
 <section id="exam-tab" class="tabpane">
   <div class="panel" id="setup">
     <h2>📝 Set up your exam</h2>
-    <p class="small">Choose subjects, how many questions, and a timer. Then press <b>Start Exam</b>. You get one try - answers are checked after you submit.</p>
+    <p class="small">Choose subjects, how many questions, and a timer. Then press <b>Start Exam</b>. You get one try. Mom checks your answers after you submit.</p>
     <h3>Subjects</h3>
     <div id="cats"></div>
     <div class="controls"><button type="button" class="btn ghost" id="all">Select all</button><button type="button" class="btn ghost" id="none">Clear</button></div>
@@ -20,9 +20,15 @@
       <label>Timer: <select id="timer"><option value="0">No timer</option><option value="5">5 min</option><option value="10" selected>10 min</option><option value="15">15 min</option><option value="20">20 min</option><option value="30">30 min</option><option value="45">45 min</option></select></label>
     </div>
     <div class="controls"><button type="button" class="btn big" id="start">▶️ Start Exam</button></div>
-    <details class="formom"><summary>🔒 For Mom</summary><p><a class="btn alt" href="review.html?kid=aarya">📊 Review Exams &amp; grades</a></p><p>Print a paper exam with the subjects and number of questions above:</p><label><input type="checkbox" id="withkey"> Add the answer key (last page)</label> <button type="button" class="btn ghost" id="print-paper">🖨️ Print paper exam</button></details>
+    <details class="formom"><summary>🔒 For Mom</summary><p><a class="btn alt" href="review.html?kid=aarya">📊 Review Exams &amp; grades</a></p><p>Print a paper exam with the subjects and number of questions above (answer keys are in Review Exams):</p><button type="button" class="btn ghost" id="print-paper">🖨️ Print paper exam</button></details>
   </div>
   <div id="exam"></div>
+</section>
+<section id="history-tab" class="tabpane" hidden>
+  <div class="panel"><h2>📚 My Exams</h2><p class="small">Every exam you've taken, newest first. Results appear after Mom reviews and releases them.</p>
+  <div id="history-filter"></div>
+  <div class="controls"><button type="button" class="btn ghost tiny" id="refresh-history">🔄 Refresh</button><span id="offline-note" class="small" hidden>Offline - showing saved list</span></div></div>
+  <div id="history-list"></div>
 </section>
 <section id="original" class="tabpane" hidden>
   <div class="panel"><h2>The original pack, exactly as printed</h2><p class="small">Every page from the original PDF, unchanged. Tick each activity when finished, or print one page at a time.</p>
