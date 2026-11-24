@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aarya's Activity Pack | Problem Bank</title>
+<meta name="description" content="Aarya's activity pack - 374 practice problems to shuffle, solve and print, plus the original pack.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦄</text></svg>">
+<link rel="stylesheet" href="style.css"></head>
+<body class="aarya" data-kid="aarya">
+<header class="hero"><a class="home" href="./">← All packs</a><h1>🦄 Aarya's Activity Pack</h1><p>Jr Kindergarten • Unicorns • Tracing • Letters • Counting • Shapes</p><p id="progress"></p></header>
+<main class="wrap">
+<nav class="tabs" role="tablist"><button type="button" data-tab="practice" role="tab">🎲 Problem Bank &amp; Shuffle</button><button type="button" data-tab="original" role="tab">📄 Original Pack</button></nav>
+<section id="practice" class="tabpane">
+  <div class="panel">
+    <h2>1. Pick categories</h2>
+    <div id="cats"></div>
+    <div class="controls"><button type="button" class="btn ghost" id="all">Select all</button><button type="button" class="btn ghost" id="none">Clear</button></div>
+    <h2 style="margin-top:14px">2. Shuffle a mixed set</h2>
+    <div class="controls">
+      <label>How many? <select id="howmany"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>30</option></select></label>
+      <label class="chip"><input type="checkbox" id="fresh" checked> Only ones not done yet</label>
+      <button type="button" class="btn" id="shuffle">🎲 Shuffle!</button>
+      <button type="button" class="btn alt" id="print-set">🖨️ Print worksheet</button>
+    </div>
+    <label class="chip"><input type="checkbox" id="withkey"> Add answer key when printing (for grown-ups)</label>
+    <div class="controls"><span id="set-progress"></span><button type="button" class="btn ghost" id="reset" style="margin-left:auto">Reset progress</button></div>
+  </div>
+  <div id="set"></div>
+</section>
+<section id="original" class="tabpane" hidden>
+  <div class="panel"><h2>The original pack, exactly as printed</h2><p class="small">Every page from the original PDF, unchanged. Tick each activity when finished, or print one page at a time.</p>
+  <div class="controls"><button type="button" class="btn alt" id="print-all-orig">🖨️ Print the whole pack</button></div></div>
+<section class="orig" data-page="1" id="page-1">
+  <h3>Cover &amp; contents</h3>
+  <div class="bar"><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p01.svg" alt="Cover &amp; contents - page 1 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">For Aarya ★ Jr Kindergarten
+
+Aarya&#x27;s
+Activity Pack
+Unicorn Princess Fun!
+
+You only need crayons and a pencil.
+No scissors. No glue. Just YOU!
+
+I can do it myself!
+Colour the star at the bottom of every page when you finish it.</pre></details>
+</section>
+<section class="orig" data-page="2" id="page-2">
+  <h3>Activity 1: Trace My Name</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p02.svg" alt="Activity 1: Trace My Name - page 2 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 1
+
+Trace My Name
+Trace the light letters with your pencil. Go slow!
+My name is...
+
+Aarya
+Aarya
+Aarya
+Words I love...
+
+Unicorn
+Princess
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 1</pre></details>
+</section>
+<section class="orig" data-page="3" id="page-3">
+  <h3>Activity 2: More Tracing - Words I Love</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p03.svg" alt="Activity 2: More Tracing - Words I Love - page 3 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 2
+
+More Tracing - Words I Love
+Trace each word. Say it out loud as you trace!
+My favourite words...
+
+Unicorn
+Unicorn
+Princess
+Princess
+Rainbow
+Crown
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 2</pre></details>
+</section>
+<section class="orig" data-page="4" id="page-4">
+  <h3>Activity 3: Trace Letters and Numbers</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p04.svg" alt="Activity 3: Trace Letters and Numbers - page 4 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 3
+
+Trace Letters and Numbers
+Trace slowly on the line. Start at the left!
+Trace the letters...
+
+Aa Bb Cc
+Dd Ee Ff
+Trace the numbers...
+
+1 2 3 4 5
+6 7 8 9 10
+Now try Aarya one more time, all by yourself:
+
+Aarya
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 3</pre></details>
+</section>
+<section class="orig" data-page="5" id="page-5">
+  <h3>Activity 4: Letters A, B, C</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p05.svg" alt="Activity 4: Letters A, B, C - page 5 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 4
+
+Letters A, B, C
+Trace the letters. Then draw a line from each letter to its
+picture!
+
+Aa
+
+Bb
+
+Cc
+
+Aa
+
+Bb
+
+Cc
+
+🍎 ⚽ 👑
+
+A is for Apple
+
+B is for Ball
+
+C is for Crown
+
+Apple
+
+Ball
+
+Crown
+
+Draw your lines in the big space above. A crown is perfect for a unicorn
+princess!
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 4</pre></details>
+</section>
+<section class="orig" data-page="6" id="page-6">
+  <h3>Activity 5: Counting 1 to 10</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p06.svg" alt="Activity 5: Counting 1 to 10 - page 6 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 5
+
+Counting 1 to 10
+Count out loud. Touch each picture. Then circle the number!
+
+🎃🎃🎃🎃
+Count the pumpkins:
+
+Circle the number:
+
+3
+
+4
+
+5
+
+🦃🦃🦃🦃🦃🦃
+Count the turkeys:
+
+Circle the number:
+
+5
+
+6
+
+7
+
+⭐⭐⭐⭐⭐⭐⭐⭐
+Count the ornaments:
+
+Circle the number:
+
+★
+
+7
+
+8
+
+Colour the star when you finish!
+
+9
+
+I did it myself! Page 5</pre></details>
+</section>
+<section class="orig" data-page="7" id="page-7">
+  <h3>Activity 6: Shapes</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p07.svg" alt="Activity 6: Shapes - page 7 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 6
+
+Shapes
+Colour each shape. Then draw a line to the shape that is the
+same!
+
+Circle
+
+Square
+
+Triangle
+
+Star
+
+Now find the same shapes below and draw a line to match them:
+
+STAR
+
+★
+
+CIRCLE
+
+Colour the star when you finish!
+
+TRIANGLE
+
+SQUARE
+
+I did it myself! Page 6</pre></details>
+</section>
+<section class="orig" data-page="8" id="page-8">
+  <h3>Activity 7: Colour by Number</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p08.svg" alt="Activity 7: Colour by Number - page 8 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 7
+
+Colour by Number
+Find the number. Colour that part with the right colour!
+1 = Red
+
+2 = Orange
+
+3 = Yellow
+
+4 = Green
+
+Turkey
+
+3
+
+5 = Blue
+Snowman
+
+1
+
+1
+
+5
+
+2
+
+4
+
+Use the colour key at the top for every number.
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 7</pre></details>
+</section>
+<section class="orig" data-page="9" id="page-9">
+  <h3>Activity 8: Dot-to-Dot 1 to 10</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p09.svg" alt="Activity 8: Dot-to-Dot 1 to 10 - page 9 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 8
+
+Dot-to-Dot 1 to 10
+Start at 1. Draw a line to 2, then 3... all the way to 10!
+Star
+
+Pumpkin
+
+1
+9
+
+10
+
+2
+
+8
+
+3
+
+4
+
+5
+6
+
+1
+
+4
+6
+
+7
+
+2
+
+3
+
+7
+
+10
+5
+
+9
+
+8
+
+Colour your star and pumpkin when you finish the lines!
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 8</pre></details>
+</section>
+<section class="orig" data-page="10" id="page-10">
+  <h3>Activity 9: Help the Turkey!</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p10.svg" alt="Activity 9: Help the Turkey! - page 10 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 9
+
+Help the Turkey!
+Draw a line through the maze. Help the turkey find the pie!
+
+START
+
+PIE!
+Super easy! Go across, go down, go across again - you found the pie!
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 9</pre></details>
+</section>
+<section class="orig" data-page="11" id="page-11">
+  <h3>Activity 10: Spanish with Ms. Gloria</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p11.svg" alt="Activity 10: Spanish with Ms. Gloria - page 11 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 10
+
+Spanish with Ms. Gloria
+Say the Spanish word out loud. Draw a line to the right
+colour!
+
+rojo
+azul
+verde
+
+Now count in Spanish:
+
+uno
+
+dos
+
+1 star
+
+2 stars
+
+⭐
+
+★
+
+⭐⭐
+
+Colour the star when you finish!
+
+tres
+
+⭐⭐⭐
+3 stars
+
+I did it myself! Page 10</pre></details>
+</section>
+<section class="orig" data-page="12" id="page-12">
+  <h3>Activity 11: Dance Like a Unicorn</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p12.svg" alt="Activity 11: Dance Like a Unicorn - page 12 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 11
+
+Dance Like a Unicorn
+Copy each move 3 times. Tick the box when you do it!
+
+🌀
+⭐
+🧚
+❄
+★
+
+Twirl
+Spin around slowly like a ballerina princess.
+
+Jump
+Jump up high and land soft.
+
+Tiptoe
+Walk on tiptoes, quiet as a unicorn.
+
+Freeze
+Dance, dance... then FREEZE like a statue!
+
+Colour the star when you finish!
+
+I did it myself! Page 11</pre></details>
+</section>
+<section class="orig" data-page="13" id="page-13">
+  <h3>Activity 12: Animal Moves</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p13.svg" alt="Activity 12: Animal Moves - page 13 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 12
+
+Animal Moves
+Move like each animal. Tick the box when you do it!
+
+🐸
+🐻
+🦋
+🐇
+
+Frog Jump
+Crouch down low, then jump - ribbit! Do it 5 times.
+
+Bear Walk
+Hands and feet on the floor. Walk like a big bear.
+
+Butterfly Flap
+Flap your arms like wings. Fly around the room!
+
+Bunny Hop
+Two feet together. Hop, hop, hop - 5 hops!
+
+Great moving! Shake your whole body to finish.
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 12</pre></details>
+</section>
+<section class="orig" data-page="14" id="page-14">
+  <h3>Activity 13: Draw and Sing</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p14.svg" alt="Activity 13: Draw and Sing - page 14 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 13
+
+Draw and Sing
+Draw your family in the big box. Then sing and clap!
+
+Draw your family here:
+
+Sing: Jingle Bells
+Jingle bells, jingle bells, jingle all the way!
+Clap on every circle: ○
+
+★
+
+○
+
+○
+
+Colour the star when you finish!
+
+○
+
+○
+
+○
+
+○
+
+○
+
+I did it myself! Page 13</pre></details>
+</section>
+<section class="orig" data-page="15" id="page-15">
+  <h3>Activity 14: I Am Thankful</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p15.svg" alt="Activity 14: I Am Thankful - page 15 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 14
+
+I Am Thankful
+Draw 3 things you are thankful for. One in each box!
+
+Tell someone at home about your 3 drawings. Say: Thank you!
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 14</pre></details>
+</section>
+<section class="orig" data-page="16" id="page-16">
+  <h3>Activity 15: Day, Night and Growing</h3>
+  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
+  <img src="originals/aarya-p16.svg" alt="Activity 15: Day, Night and Growing - page 16 of the original pack" loading="lazy" width="612" height="792">
+  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Activity 15
+
+Day, Night and Growing
+Circle DAY things in yellow. Circle NIGHT things in blue.
+Then help the plant grow!
+
+☀
+Sun
+
+🌙 ⭐
+Moon
+
+Stars
+
+Cloud
+
+💧
+
+🌱
+
+🍦
+
+A plant needs 3 things to grow. Circle them:
+
+☀
+Sunshine
+
+Water
+
+Soil
+
+☁
+
+Ice cream
+
+Draw a flower in the soil:
+
+★
+
+Colour the star when you finish!
+
+I did it myself! Page 15</pre></details>
+</section>
+</section>
+</main>
+<footer>Made with love for Aarya • Progress is saved on this device only</footer>
+<div id="print-area"></div>
+<script src="data/aarya.js"></script><script src="app.js"></script>
+</body></html>
