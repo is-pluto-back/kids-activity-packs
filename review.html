@@ -4,11 +4,17 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
 <link rel="stylesheet" href="style.css"></head>
 <body class="review" data-page="review">
-<header class="hero"><a class="home" href="./">← All packs</a><h1>📊 Review Exams</h1><p>For Mom &amp; Dad • Grades for every submitted exam</p></header>
+<header class="hero"><a class="home" href="./">← All packs</a><h1>📊 Review Exams</h1><p>For Mom &amp; Dad • Parent PIN required</p></header>
 <main class="wrap">
+<div id="gate"></div>
+<div id="review-main" hidden>
+<div class="controls topbar"><button type="button" class="btn ghost tiny" id="refresh">🔄 Refresh</button><button type="button" class="btn ghost tiny" id="change-pin">🔑 Change PIN</button><button type="button" class="btn ghost tiny" id="lock">🔒 Lock</button></div>
 <nav class="tabs kidtabs"><button type="button" data-kid="ayden">♞ Ayden</button><button type="button" data-kid="aarya">🦄 Aarya</button></nav>
+<div class="panel"><h2>Filter by date</h2><div id="review-filter"></div></div>
 <div id="review"></div>
-<p class="small">Grades: A 90%+, B 80%+, C 70%+, D 60%+, F below 60%. Drawing, tracing and movement activities are not auto-graded - mark them done to count them. Exams are stored in this browser on this device.</p>
+<details class="panel"><summary><b>📄 Original pack answer key (Ayden)</b></summary><button type="button" class="btn ghost" id="keypage-btn">Show it</button><div id="keypage"></div></details>
+<p class="small">Grades: A 90%+, B 80%+, C 70%+, D 60%+, F below 60%. Drawing, tracing and movement activities aren't auto-graded: mark them done to count them. Results stay hidden from the kids until you press <b>Release</b>. All dates and times are Central Time (America/Chicago).</p>
+</div>
 </main>
 <footer>Kids Activity Packs</footer>
 <div id="print-area"></div>

@@ -25,67 +25,10 @@
   const index = {};
   for (const [kid, bank] of Object.entries(BANKS)) { index[kid] = {}; for (const [ck, c] of Object.entries(bank)) for (const it of c.items) { it.cat = ck; index[kid][it.id] = it; } }
   const fmtTime = s => { s = Math.max(0, Math.round(s)); const m = Math.floor(s / 60), x = s % 60; return m + ":" + String(x).padStart(2, "0"); };
-  const fmtDate = t => new Date(t).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
-
-  // ---------- grading ----------
-  const norm = s => String(s).toLowerCase().replace(/\b(am|pm|cents?|pounds?)\b/g, "").replace(/[.,]+$/g, "").replace(/\s+/g, " ").trim();
-  const chessNorm = s => String(s).toLowerCase().replace(/[\s+#x\-=!?:]/g, "");
-  const SELF = t => t === "open" || t === "trace";
-  function grade(it, r) {
-    // returns {pts, max, answered}
-    const blank = r == null || r === "" || (Array.isArray(r) && r.every(x => x == null || x === ""));
-    switch (it.type) {
-      case "mc": case "shape": return { pts: r === it.answer ? 1 : 0, max: 1, answered: !blank };
-      case "input": { const v = String(r || ""); const ok = !!v.trim() && it.answer.some(a => norm(a) === norm(v) || norm(a).replace(/\s/g, "") === norm(v).replace(/[\s,]/g, "")); return { pts: ok ? 1 : 0, max: 1, answered: !blank }; }
-      case "chess": { const v = String(r || ""); const ok = !!v.trim() && (it.answer.some(a => chessNorm(a) === chessNorm(v)) || chessNorm(v) === it.answer[1].slice(2)); return { pts: ok ? 1 : 0, max: 1, answered: !blank }; }
-      case "notes": { const v = String(r || "").replace(/[\s,\-]/g, "").toUpperCase(); return { pts: v && it.answer.some(a => a.replace(/\s/g, "").toUpperCase() === v) ? 1 : 0, max: 1, answered: !blank }; }
-      case "sudoku": { const v = String(r || ""); const ok = v.length === 81 && v === it.answer[0]; return { pts: ok ? 1 : 0, max: 1, answered: !!v.replace(/0/g, "") && v !== it.puzzle }; }
-      case "order": return { pts: Array.isArray(r) && r.every((x, i) => x === it.answer[i]) ? 1 : 0, max: 1, answered: !blank };
-      case "reading": { const a = Array.isArray(r) ? r : []; return { pts: it.questions.filter((q, i) => a[i] === q.answer).length, max: it.questions.length, answered: a.some(x => x != null) }; }
-      default: return { pts: 0, max: 0, answered: !!r, self: true }; // open / trace: Mom checks
-    }
-  }
-  function letter(p) { return p >= 90 ? "A" : p >= 80 ? "B" : p >= 70 ? "C" : p >= 60 ? "D" : "F"; }
-  function scoreExam(kid, ex) {
-    let pts = 0, max = 0, answered = 0, selfDone = 0, selfTotal = 0;
-    ex.results = {};
-    for (const id of ex.items) {
-      const it = index[kid][id]; if (!it) continue;
-      let g = grade(it, ex.responses[id]);
-      const ov = (ex.overrides || {})[id];
-      if (SELF(it.type)) { selfTotal++; if (g.answered) selfDone++; if (ov != null) g = { pts: ov ? 1 : 0, max: 1, answered: g.answered, self: true, override: true }; }
-      else if (ov != null) g = { pts: ov ? g.max || 1 : 0, max: g.max || 1, answered: g.answered, override: true };
-      ex.results[id] = g; pts += g.pts; max += g.max; if (g.answered) answered++;
-    }
-    ex.score = pts; ex.max = max; ex.answered = answered; ex.selfDone = selfDone; ex.selfTotal = selfTotal;
-    ex.percent = max ? Math.round(100 * pts / max) : null; ex.grade = max ? letter(ex.percent) : "-";
-    return ex;
-  }
-  function answerText(it) {
-    switch (it.type) {
-      case "mc": return it.choices[it.answer];
-      case "input": return it.explain || it.answer[0];
-      case "chess": return it.explain;
-      case "notes": return it.answer[0];
-      case "order": return it.answer.map((n, i) => ORD[i] + " " + n).join(", ");
-      case "shape": return it.shapes[it.answer];
-      case "reading": return it.questions.map((q, i) => (i + 1) + ". " + q.choices[q.answer]).join("  ");
-      case "sudoku": return "(see solution grid)";
-      default: return "Mom checks";
-    }
-  }
-  function responseText(it, r) {
-    if (r == null || r === "") return "(no answer)";
-    switch (it.type) {
-      case "mc": return it.choices[r] != null ? it.choices[r] : "(no answer)";
-      case "shape": return it.shapes[r] || "(no answer)";
-      case "order": return r.map((n, i) => ORD[i] + " " + (n || "-")).join(", ");
-      case "reading": return it.questions.map((q, i) => (i + 1) + ". " + (r[i] != null ? q.choices[r[i]] : "-")).join("  ");
-      case "sudoku": { const filled = [...r].filter((c, i) => it.puzzle[i] === "0" && c !== "0").length; const right = [...r].filter((c, i) => it.puzzle[i] === "0" && c === it.answer[0][i]).length; const empty = [...it.puzzle].filter(c => c === "0").length; return `${filled}/${empty} squares filled, ${right} correct`; }
-      case "open": case "trace": return r ? "Ticked 'I did it'" : "Not ticked";
-      default: return String(r);
-    }
-  }
+  const TZ = "America/Chicago";
+  const fmtDate = t => t ? new Intl.DateTimeFormat("en-US", { timeZone: TZ, weekday: "short", year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date(t)) + " CT" : "";
+  const dayOf = t => t ? new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(t)) : "";
+  const api = async (path, opts) => { const r = await fetch(path, Object.assign({ headers: { "Content-Type": "application/json" } }, opts)); let j = {}; try { j = await r.json(); } catch (e) {} if (!r.ok) { const err = new Error(j.error || ("HTTP " + r.status)); err.status = r.status; err.data = j; throw err; } return j; };
 
   // ---------- visual builders ----------
   const PIECES = { K: "♔", Q: "♕", R: "♖", B: "♗", N: "♘", P: "♙", k: "♚", q: "♛", r: "♜", b: "♝", n: "♞", p: "♟" };
@@ -134,6 +77,12 @@
   }
   function speak(text, lang) { if (!("speechSynthesis" in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = 0.85; if (lang) u.lang = lang; speechSynthesis.speak(u); }
 
+  function isAnswered(it, r) {
+    if (r == null || r === "" || r === false) return false;
+    if (Array.isArray(r)) return r.some(x => x != null && x !== "");
+    if (it.type === "sudoku") return typeof r === "string" && r.length === 81 && r !== it.puzzle;
+    return true;
+  }
   // ---------- printing ----------
   function printItem(it, n) {
     let h = `<div class="pitem"><div class="pq"><b>${n}.</b> ${esc(it.q)}</div>`;
@@ -152,11 +101,12 @@
     }
     return h + "</div>";
   }
-  function examPaperHTML(kid, ex, withKey) {
+  // key: optional array of {n, correctAnswer, solution, puzzle} from the parent API
+  function examPaperHTML(kid, ex, key) {
     const items = ex.items.map(id => index[kid][id]).filter(Boolean);
-    let h = `<header class="phead"><h1>${esc(ex.title)}</h1><p>${esc(ex.subtitle)} • ${items.length} questions${ex.timeLimit ? " • Suggested time: " + ex.timeLimit + " minutes" : ""}</p><p>Name: ________________ Date: ____________ Score: ______</p></header>`;
+    let h = `<header class="phead"><h1>${esc(ex.title)}</h1><p>${esc(ex.subtitle || "")} • ${items.length} questions${ex.timeLimit ? " • Suggested time: " + ex.timeLimit + " minutes" : ""}${ex.startedAt ? " • " + esc(fmtDate(ex.startedAt)) : ""}</p><p>Name: ________________ Date: ____________ Score: ______</p></header>`;
     h += items.map((it, i) => printItem(it, i + 1)).join("");
-    if (withKey) h += `<section class="pkey"><h2>Answer key - For Mom</h2><ol>${items.map(it => it.type === "sudoku" ? `<li>Sudoku solution:${sudokuHTML(it.puzzle, it.answer[0], true)}</li>` : `<li>${esc(answerText(it))}</li>`).join("")}</ol></section>`;
+    if (key) h += `<section class="pkey"><h2>Answer key - For Mom</h2><ol>${key.map(q => q.solution ? `<li>Sudoku solution:${sudokuHTML(q.puzzle, q.solution, true)}</li>` : `<li>${esc(q.correctAnswer || "Mom checks")}</li>`).join("")}</ol></section>`;
     return h;
   }
   function doPrint(html) {
@@ -166,50 +116,112 @@
   }
   window.addEventListener("afterprint", () => { document.body.classList.remove("printing"); const pa = $("#print-area"); if (pa) pa.innerHTML = ""; });
 
+  // shared: render one reviewed question (kid released view + parent view)
+  function resultItem(q, extra) {
+    const li = el("li", { class: q.state });
+    const icon = { ok: "✅", no: "❌", part: "◐", done: "✅", notdone: "⬜", self: "📝" }[q.state] || "";
+    li.append(el("div", { class: "rq" }, el("b", {}, icon + " " + q.label), " - ", q.q));
+    if (q.fen) li.append(boardEl(q.fen));
+    if (q.notes) li.append(el("div", { html: staffSVG(q.notes) }));
+    if (q.pic) li.append(el("div", { class: "pic small-pic" }, q.pic));
+    li.append(el("div", { class: "small" }, el("b", {}, "Your answer: "), q.yourAnswer));
+    if (q.solution) li.append(el("div", { class: "small" }, el("b", {}, "Solution:")), el("div", { html: sudokuHTML(q.puzzle, q.solution, true) }));
+    else if (q.correctAnswer) li.append(el("div", { class: "small" }, el("b", {}, "Correct answer: "), q.correctAnswer));
+    if (q.note && !extra) li.append(el("div", { class: "momnote" }, "💬 Mom: " + q.note));
+    if (extra) li.append(extra(q));
+    return li;
+  }
+  function dateFilterEl(onChange) {
+    const from = el("input", { type: "date", "aria-label": "From date" }), to = el("input", { type: "date", "aria-label": "To date" });
+    const wrap = el("div", { class: "controls datefilter" }, el("label", {}, "From ", from), el("label", {}, "To ", to), el("button", { type: "button", class: "btn tiny ghost", onclick: () => { from.value = ""; to.value = ""; onChange(); } }, "All dates"));
+    from.addEventListener("change", onChange); to.addEventListener("change", onChange);
+    wrap.match = t => { const d = dayOf(t); return (!from.value || d >= from.value) && (!to.value || d <= to.value); };
+    return wrap;
+  }
+
   // =====================================================================
-  // KID PAGE: exam flow
+  // KID PAGE: exam flow + My Exams history
   // =====================================================================
   function kidPage(KID) {
     const BANK = BANKS[KID]; const NAME = NAMES[KID];
     const S = { get: (k, d) => store.get(KID, k, d), set: (k, v) => store.set(KID, k, v), del: k => store.del(KID, k) };
-    let current = S.get("current", null); // exam in progress
-    let timerId = null;
+    let current = S.get("current", null);
+    let timerId = null; let serverExams = null; let filter;
     const selectedCats = () => $$("#cats input:checked").map(x => x.value);
-
     function renderCats() {
       const box = $("#cats"); box.innerHTML = ""; const saved = S.get("cats", Object.keys(BANK));
       for (const [k, c] of Object.entries(BANK)) box.append(el("label", { class: "chip" }, el("input", { type: "checkbox", value: k, checked: saved.includes(k) ? "" : false, onchange: () => S.set("cats", selectedCats()) }), " " + c.icon + " " + c.name + " ", el("span", { class: "count" }, "(" + c.items.length + ")")));
     }
-    function stats() {
-      const exams = S.get("exams", []);
-      const p = $("#progress"); if (p) p.textContent = exams.length ? `${exams.length} exam${exams.length > 1 ? "s" : ""} submitted` : "Ready for your first exam?";
+    // ----- outbox (offline queue) -----
+    const outbox = () => S.get("outbox", []);
+    function queue(action, exam) { const o = outbox().filter(x => !(x.exam.id === exam.id && x.action === action)); o.push({ action, exam }); S.set("outbox", o); }
+    async function flush() {
+      let o = outbox(); if (!o.length) return;
+      const keep = [];
+      for (const m of o) {
+        try { await api("/api/exams", { method: "POST", body: JSON.stringify(m) }); }
+        catch (e) { if (e.status && e.status < 500 && e.status !== 429) { /* rejected permanently (e.g. already submitted) */ } else keep.push(m); }
+      }
+      S.set("outbox", keep); if (keep.length !== o.length) loadHistory();
+    }
+    window.addEventListener("online", flush); setInterval(flush, 30000);
+    // ----- history -----
+    async function loadHistory() {
+      try { serverExams = (await api("/api/exams?kid=" + KID)).exams; S.set("history-cache", serverExams); $("#offline-note").hidden = true; }
+      catch (e) { serverExams = S.get("history-cache", []); $("#offline-note").hidden = false; }
+      renderHistory();
+    }
+    function renderHistory() {
+      const box = $("#history-list"); if (!box) return; box.innerHTML = "";
+      const pending = outbox().filter(m => m.action === "submit").map(m => Object.assign({}, m.exam, { status: "pending" }));
+      const ids = new Set((serverExams || []).map(e => e.id));
+      let list = pending.filter(p => !ids.has(p.id)).concat(serverExams || []);
+      if (current && !list.some(e => e.id === current.id)) list.unshift(Object.assign({}, current, { status: "in_progress_local" }));
+      list = list.filter(e => e.status !== "in_progress" || (current && current.id === e.id));
+      list.sort((a, b) => String(b.startedAt).localeCompare(String(a.startedAt)));
+      list = list.filter(e => filter.match(e.startedAt));
+      if (!list.length) { box.append(el("p", { class: "empty small" }, "No exams yet for these dates.")); return; }
+      for (const e of list) {
+        const st = e.status === "released" ? ["✨ Results are ready!", "released"] : e.status === "submitted" ? ["⏳ Waiting for Mom to review", "waiting"] : e.status === "pending" ? ["📶 Saved on this device - will send when online", "waiting"] : ["✏️ In progress", "inprog"];
+        const card_ = el("details", { class: "panel histcard " + st[1] });
+        card_.append(el("summary", {}, e.status === "released" ? el("span", { class: "grade g" + e.grade }, e.grade) : null, el("span", {}, el("b", {}, e.title || (NAME + "'s Exam")), el("br"), el("span", { class: "small" }, "Started " + fmtDate(e.startedAt) + (e.submittedAt ? " • Submitted " + fmtDate(e.submittedAt) : "") + " • " + (e.count || (e.items || []).length) + " questions")), el("span", { class: "badge" }, st[0])));
+        if (e.status === "released") {
+          card_.append(el("p", { class: "score" }, `Score: ${e.max ? e.score + " / " + e.max + " (" + e.percent + "%)" : "-"} • Grade: ${e.grade}`));
+          if (e.note) card_.append(el("div", { class: "momnote big" }, "💬 Mom says: " + e.note));
+          const ol = el("ol", { class: "revlist" }); (e.questions || []).forEach(q => ol.append(resultItem(q))); card_.append(ol);
+        } else if (e.status === "submitted" || e.status === "pending") card_.append(el("p", {}, "Mom hasn't reviewed this exam yet. Your results will show here when she releases them."));
+        else card_.append(el("p", {}, "Scroll down to keep going with this exam."));
+        box.append(card_);
+      }
     }
     function startExam() {
       const cats = selectedCats(); if (!cats.length) { alert("Pick at least one subject first!"); return; }
       const n = +$("#howmany").value; const limit = +$("#timer").value || 0;
-      const exams = S.get("exams", []);
-      const seen = new Set(exams.flatMap(e => e.items));
-      let per = cats.map(k => { const all = BANK[k].items.slice().sort(() => Math.random() - 0.5); const fresh = all.filter(i => !seen.has(i.id)); return fresh.length ? fresh.concat(all.filter(i => seen.has(i.id))) : all; });
+      const seen = new Set(S.get("seen", []));
+      const per = cats.map(k => { const all = BANK[k].items.slice().sort(() => Math.random() - 0.5); const fresh = all.filter(i => !seen.has(i.id)); return fresh.length ? fresh.concat(all.filter(i => seen.has(i.id))) : all; });
       const out = []; while (out.length < n && per.some(a => a.length)) for (const a of per) if (a.length && out.length < n) out.push(a.shift());
       const items = out.sort(() => Math.random() - 0.5).map(i => i.id);
-      const num = exams.length + 1;
+      S.set("seen", [...seen, ...items].slice(-2000));
       const subjects = cats.map(k => BANK[k].name.split(" - ")[0].replace(/ with .*$/, ""));
-      current = { id: KID + "-" + Date.now(), kid: KID, number: num, title: `${NAME}'s Exam #${num}`, subtitle: subjects.length > 4 ? subjects.length + " subjects (mixed)" : subjects.join(", "), cats, items, timeLimit: limit || null, createdAt: Date.now(), startedAt: Date.now(), responses: {} };
-      S.set("current", current); renderExam(); window.scrollTo({ top: $("#exam").offsetTop - 10, behavior: "smooth" });
+      const num = (serverExams || []).length + 1;
+      current = { id: KID + "-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8), kid: KID, title: `${NAME}'s Exam #${num}`, subtitle: subjects.length > 4 ? subjects.length + " subjects (mixed)" : subjects.join(", "), cats, items, timeLimit: limit || null, startedAt: new Date().toISOString(), responses: {} };
+      S.set("current", current);
+      api("/api/exams", { method: "POST", body: JSON.stringify({ action: "start", exam: current }) }).then(r => { if (current && r.exam) { current.title = r.exam.title; S.set("current", current); const h = $("#exam-title"); if (h) h.textContent = "📝 " + current.title; } }).catch(() => queue("start", current));
+      renderExam(); renderHistory(); window.scrollTo({ top: $("#exam").offsetTop - 10, behavior: "smooth" });
     }
     function save() { S.set("current", current); updateAnswered(); }
     function setResp(id, v) { current.responses[id] = v; save(); }
     function updateAnswered() {
       if (!current) return;
-      const n = current.items.filter(id => grade(index[KID][id], current.responses[id]).answered).length;
+      const n = current.items.filter(id => isAnswered(index[KID][id], current.responses[id])).length;
       const a = $("#answered"); if (a) a.textContent = `${n} of ${current.items.length} answered`;
-      $$("#exam .qcard").forEach(c => c.classList.toggle("answered", grade(index[KID][c.dataset.id], current.responses[c.dataset.id]).answered));
+      $$("#exam .qcard").forEach(c => c.classList.toggle("answered", isAnswered(index[KID][c.dataset.id], current.responses[c.dataset.id])));
     }
     function tick() {
       if (!current) return; const t = $("#timer-display"); if (!t) return;
-      const el_ = (Date.now() - current.startedAt) / 1000;
-      if (current.timeLimit) { const left = current.timeLimit * 60 - el_; t.textContent = left >= 0 ? "⏱ " + fmtTime(left) + " left" : "⏱ Time is up (+" + fmtTime(-left) + ") - you can still finish"; t.classList.toggle("over", left < 0); }
-      else t.textContent = "⏱ " + fmtTime(el_);
+      const secs = (Date.now() - Date.parse(current.startedAt)) / 1000;
+      if (current.timeLimit) { const left = current.timeLimit * 60 - secs; t.textContent = left >= 0 ? "⏱ " + fmtTime(left) + " left" : "⏱ Time is up (+" + fmtTime(-left) + ") - you can still finish"; t.classList.toggle("over", left < 0); }
+      else t.textContent = "⏱ " + fmtTime(secs);
     }
     function qcard(it, num) {
       const r = current.responses[it.id];
@@ -231,10 +243,10 @@
         case "input": case "chess": case "notes": {
           if (it.type === "chess") body.append(boardEl(it.fen), pieceList(it.fen));
           if (it.type === "notes") body.append(el("div", { html: staffSVG(it.notes) }));
-          const x = el("input", { type: "text", class: "ans", "aria-label": "Your answer", placeholder: it.type === "chess" ? "Your move, e.g. Nf6" : "Your answer", inputmode: /^\d+$/.test(it.answer[0]) ? "numeric" : "text", autocomplete: "off", value: r || "" });
+          const numeric = it.sub && /Adding|Subtracting|Repeated|Groups|Word problems|Money|Skip|Riddles|maths/i.test(it.sub) || /How many/.test(it.q);
+          const x = el("input", { type: "text", class: "ans", "aria-label": "Your answer", placeholder: it.type === "chess" ? "Your move, e.g. Nf6" : "Your answer", inputmode: numeric ? "numeric" : "text", autocomplete: "off", value: r || "" });
           x.addEventListener("input", () => setResp(it.id, x.value));
-          body.append(el("div", { class: "row" }, x));
-          break;
+          body.append(el("div", { class: "row" }, x)); break;
         }
         case "sudoku": {
           const g = el("div", { class: "sudoku" }); const cur = (r && r.length === 81) ? r : it.puzzle;
@@ -247,8 +259,7 @@
         }
         case "order": {
           const vals = Array.isArray(r) ? r.slice() : ["", "", "", ""];
-          body.append(el("div", { class: "order" }, [0, 1, 2, 3].map(i => el("label", {}, ORD[i] + ": ", (() => { const s = el("select", { "aria-label": ORD[i] }, el("option", { value: "" }, "-"), it.options.map(o => el("option", { value: o, selected: vals[i] === o ? "" : false }, o))); s.addEventListener("change", () => { vals[i] = s.value; setResp(it.id, vals.slice()); }); return s; })()))));
-          break;
+          body.append(el("div", { class: "order" }, [0, 1, 2, 3].map(i => el("label", {}, ORD[i] + ": ", (() => { const s = el("select", { "aria-label": ORD[i] }, el("option", { value: "" }, "-"), it.options.map(o => el("option", { value: o, selected: vals[i] === o ? "" : false }, o))); s.addEventListener("change", () => { vals[i] = s.value; setResp(it.id, vals.slice()); }); return s; })())))); break;
         }
         case "reading": {
           body.append(el("div", { class: "passage" }, it.passage.split("\n").map(p => el("p", {}, p))));
@@ -269,37 +280,36 @@
       $("#setup").hidden = !!current;
       if (!current) return;
       const items = current.items.map(id => index[KID][id]).filter(Boolean);
-      box.append(el("div", { class: "panel examhead" },
-        el("h2", {}, "📝 " + current.title),
-        el("p", { class: "small" }, current.subtitle + " • " + items.length + " questions" + (current.timeLimit ? " • " + current.timeLimit + " minute timer (just a guide)" : "")),
+      box.append(el("div", { class: "panel examhead" }, el("h2", { id: "exam-title" }, "📝 " + current.title),
+        el("p", { class: "small" }, current.subtitle + " • " + items.length + " questions" + (current.timeLimit ? " • " + current.timeLimit + " minute timer (just a guide)" : "") + " • Started " + fmtDate(current.startedAt)),
         el("p", { class: "small" }, "Read each question carefully. You can change answers until you press Submit. You only get to submit once!")));
       box.append(el("div", { class: "examstatus" }, el("span", { id: "timer-display", class: "timer" }), el("span", { id: "answered", class: "answered" })));
       items.forEach((it, i) => box.append(qcard(it, i + 1)));
-      box.append(el("div", { class: "panel submitbar" }, el("button", { type: "button", class: "btn big", onclick: submit }, "✅ Submit Exam"), el("button", { type: "button", class: "btn ghost", onclick: () => doPrint(examPaperHTML(KID, current, false)) }, "🖨️ Print exam paper")));
+      box.append(el("div", { class: "panel submitbar" }, el("button", { type: "button", class: "btn big", id: "submit", onclick: submit }, "✅ Submit Exam"), el("button", { type: "button", class: "btn ghost", onclick: () => doPrint(examPaperHTML(KID, current, null)) }, "🖨️ Print exam paper")));
       updateAnswered(); tick(); timerId = setInterval(tick, 1000);
     }
-    function submit() {
+    async function submit() {
       if (!current) return;
-      const unanswered = current.items.filter(id => !grade(index[KID][id], current.responses[id]).answered).length;
+      const unanswered = current.items.filter(id => !isAnswered(index[KID][id], current.responses[id])).length;
       if (!confirm((unanswered ? `${unanswered} question${unanswered > 1 ? "s are" : " is"} not answered yet.\n\n` : "") + "Submit your exam? You can only submit once.")) return;
-      const ex = current; ex.submittedAt = Date.now(); ex.durationSec = Math.round((ex.submittedAt - ex.startedAt) / 1000);
-      scoreExam(KID, ex);
-      const exams = S.get("exams", []); exams.push(ex); S.set("exams", exams); S.del("current"); current = null; clearInterval(timerId);
+      const ex = Object.assign({}, current, { submittedAt: new Date().toISOString() });
+      const btn = $("#submit"); if (btn) { btn.disabled = true; btn.textContent = "Sending…"; }
+      let sent = false, msg = "";
+      try { await api("/api/exams", { method: "POST", body: JSON.stringify({ action: "submit", exam: ex }) }); sent = true; }
+      catch (e) { if (e.status === 409) { sent = true; msg = "This exam was already submitted."; } else if (e.status && e.status < 500) { if (btn) { btn.disabled = false; btn.textContent = "✅ Submit Exam"; } alert("Could not submit: " + e.message); return; } else queue("submit", ex); }
+      S.del("current"); current = null; clearInterval(timerId);
       const box = $("#exam"); box.innerHTML = "";
-      box.append(el("div", { class: "panel done-panel" }, el("div", { class: "bigemoji" }, "🎉"), el("h2", {}, "Exam submitted!"), el("p", {}, `You answered ${ex.answered} of ${ex.items.length} questions in ${fmtTime(ex.durationSec)}.`), el("p", {}, "Great work, " + NAME + "! Mom will review your exam and give you your grade."), el("button", { type: "button", class: "btn", onclick: () => { box.innerHTML = ""; $("#setup").hidden = false; window.scrollTo({ top: 0, behavior: "smooth" }); } }, "Start a new exam")));
-      $("#setup").hidden = true; stats(); window.scrollTo({ top: box.offsetTop - 10, behavior: "smooth" });
+      box.append(el("div", { class: "panel done-panel" }, el("div", { class: "bigemoji" }, "🎉"), el("h2", {}, "Exam submitted!"),
+        el("p", {}, msg || (sent ? `Sent to Mom on ${fmtDate(ex.submittedAt)}.` : "No internet right now - your exam is saved on this device and will be sent automatically.")),
+        el("p", {}, "Great work, " + NAME + "! Mom will review your exam. You'll see your results under My Exams after she releases them."),
+        el("button", { type: "button", class: "btn", onclick: () => { box.innerHTML = ""; $("#setup").hidden = false; window.scrollTo({ top: 0, behavior: "smooth" }); } }, "Start a new exam")));
+      $("#setup").hidden = true; await loadHistory(); window.scrollTo({ top: box.offsetTop - 10, behavior: "smooth" });
     }
     function printBlank() {
       const cats = selectedCats(); if (!cats.length) { alert("Pick at least one subject first!"); return; }
-      // build a paper exam without starting the on-screen exam
-      const save_ = current; startExamDry();
-      function startExamDry() {
-        const n = +$("#howmany").value; const per = cats.map(k => BANK[k].items.slice().sort(() => Math.random() - 0.5));
-        const out = []; while (out.length < n && per.some(a => a.length)) for (const a of per) if (a.length && out.length < n) out.push(a.shift());
-        const ex = { title: `${NAME}'s Exam (paper)`, subtitle: cats.map(k => BANK[k].name.split(" - ")[0]).join(", "), items: out.map(i => i.id), timeLimit: +$("#timer").value || null };
-        doPrint(examPaperHTML(KID, ex, $("#withkey") && $("#withkey").checked));
-      }
-      current = save_;
+      const n = +$("#howmany").value; const per = cats.map(k => BANK[k].items.slice().sort(() => Math.random() - 0.5));
+      const out = []; while (out.length < n && per.some(a => a.length)) for (const a of per) if (a.length && out.length < n) out.push(a.shift());
+      doPrint(examPaperHTML(KID, { title: `${NAME}'s Exam (paper)`, subtitle: cats.map(k => BANK[k].name.split(" - ")[0]).join(", "), items: out.map(i => i.id), timeLimit: +$("#timer").value || null }, null));
     }
     // originals
     $$(".orig").forEach(sec => {
@@ -307,75 +317,117 @@
       if (cb) { cb.checked = !!S.get(key, false); sec.classList.toggle("solved", cb.checked); cb.addEventListener("change", () => { S.set(key, cb.checked); sec.classList.toggle("solved", cb.checked); }); }
       const pb = sec.querySelector(".print-one"); if (pb) pb.addEventListener("click", () => doPrint(`<img class="pagefull" src="${sec.querySelector("img").getAttribute("src")}" alt="">`));
     });
-    const all = $("#print-all-orig"); if (all) all.addEventListener("click", () => doPrint($$(".orig:not(.key) img").map(i => `<img class="pagefull" src="${i.getAttribute("src")}" alt="">`).join("")));
-    const keyb = $("#print-key-orig"); if (keyb) keyb.addEventListener("click", () => doPrint($$(".orig.key img").map(i => `<img class="pagefull" src="${i.getAttribute("src")}" alt="">`).join("")));
-    // tabs
+    const all = $("#print-all-orig"); if (all) all.addEventListener("click", () => doPrint($$(".orig img").map(i => `<img class="pagefull" src="${i.getAttribute("src")}" alt="">`).join("")));
     const btns = $$(".tabs button");
-    const show = id => { btns.forEach(b => b.setAttribute("aria-selected", b.dataset.tab === id)); $$(".tabpane").forEach(p => p.hidden = p.id !== id); S.set("tab", id); };
+    const show = id => { btns.forEach(b => b.setAttribute("aria-selected", b.dataset.tab === id)); $$(".tabpane").forEach(p => p.hidden = p.id !== id); S.set("tab", id); if (id === "history-tab") loadHistory(); };
     btns.forEach(b => b.addEventListener("click", () => show(b.dataset.tab)));
-    show(location.hash === "#original" ? "original" : S.get("tab", "exam-tab"));
-    renderCats(); stats(); renderExam();
+    filter = dateFilterEl(renderHistory); $("#history-filter").append(filter);
+    renderCats(); renderExam();
+    show(location.hash === "#original" ? "original" : location.hash === "#my-exams" ? "history-tab" : S.get("tab", "exam-tab"));
+    loadHistory().then(flush);
     $("#start").addEventListener("click", startExam);
     $("#all").addEventListener("click", () => { $$("#cats input").forEach(x => x.checked = true); S.set("cats", selectedCats()); });
     $("#none").addEventListener("click", () => { $$("#cats input").forEach(x => x.checked = false); S.set("cats", []); });
     $("#print-paper").addEventListener("click", printBlank);
+    $("#refresh-history").addEventListener("click", loadHistory);
   }
 
   // =====================================================================
-  // PARENT PAGE: review exams
+  // PARENT PAGE: PIN gate + review, notes, release
   // =====================================================================
   function reviewPage() {
     let kid = new URLSearchParams(location.search).get("kid") || store.get("review", "kid", "ayden");
-    function render() {
+    let token = sessionStorage.getItem("kap:parent:token") || "";
+    let exams = []; let filter;
+    const authed = (body) => api("/api/parent", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + token }, body: JSON.stringify(body) });
+    const gate = $("#gate"), main = $("#review-main");
+    async function boot() {
+      if (token) { main.hidden = false; gate.hidden = true; return loadList(); }
+      main.hidden = true; gate.hidden = false; gate.innerHTML = "";
+      let status; try { status = await api("/api/parent"); } catch (e) { gate.append(el("p", { class: "panel" }, "Can't reach the server right now. Check the internet connection and reload.")); return; }
+      const pin = el("input", { type: "password", inputmode: "numeric", autocomplete: status.pinSet ? "current-password" : "new-password", pattern: "[0-9]*", maxlength: "8", class: "ans pin", "aria-label": "Parent PIN", placeholder: "PIN" });
+      const pin2 = el("input", { type: "password", inputmode: "numeric", autocomplete: "new-password", pattern: "[0-9]*", maxlength: "8", class: "ans pin", "aria-label": "Repeat PIN", placeholder: "Repeat PIN" });
+      const msg = el("p", { class: "feedback bad", "aria-live": "polite" });
+      const go = async () => {
+        msg.textContent = "";
+        if (!/^\d{4,8}$/.test(pin.value)) { msg.textContent = "Use 4 to 8 digits."; return; }
+        if (!status.pinSet && pin.value !== pin2.value) { msg.textContent = "The two PINs don't match."; return; }
+        try { const r = await api("/api/parent", { method: "POST", body: JSON.stringify({ action: status.pinSet ? "login" : "setup", pin: pin.value }) }); token = r.token; sessionStorage.setItem("kap:parent:token", token); pin.value = pin2.value = ""; boot(); }
+        catch (e) { msg.textContent = e.message; if (e.status === 409) boot(); }
+      };
+      [pin, pin2].forEach(x => x.addEventListener("keydown", e => { if (e.key === "Enter") go(); }));
+      gate.append(el("div", { class: "panel gatepanel" }, el("div", { class: "bigemoji" }, "🔒"),
+        el("h2", {}, status.pinSet ? "Enter the parent PIN" : "Create a parent PIN"),
+        el("p", { class: "small" }, status.pinSet ? "Only grown-ups can review exams and release results." : "First time here: choose a 4-8 digit PIN that the kids don't know. You'll need it every time you review exams."),
+        el("div", { class: "pinrow" }, pin, status.pinSet ? null : pin2), el("button", { type: "button", class: "btn big", onclick: go }, status.pinSet ? "Unlock" : "Save PIN"), msg));
+      pin.focus();
+    }
+    async function loadList() {
       store.set("review", "kid", kid);
       $$(".kidtabs button").forEach(b => b.setAttribute("aria-selected", b.dataset.kid === kid));
-      const box = $("#review"); box.innerHTML = "";
-      const exams = store.get(kid, "exams", []).slice().reverse();
-      const cur = store.get(kid, "current", null);
-      if (cur) box.append(el("div", { class: "panel inprog" }, el("b", {}, "In progress: "), `${cur.title} - started ${fmtDate(cur.startedAt)}, ${cur.items.length} questions. Not submitted yet.`));
-      if (!exams.length) { box.append(el("p", { class: "empty" }, `No submitted exams for ${NAMES[kid]} on this device yet.`)); return; }
-      const graded = exams.filter(e => e.max);
-      const avg = graded.length ? Math.round(graded.reduce((a, e) => a + e.percent, 0) / graded.length) : null;
-      box.append(el("div", { class: "panel" }, el("h2", {}, `${NAMES[kid]}: ${exams.length} exam${exams.length > 1 ? "s" : ""}`), avg != null ? el("p", {}, `Average: ${avg}% (${letter(avg)})`) : null,
-        el("table", { class: "gradebook" }, el("thead", {}, el("tr", {}, ["Exam", "Score", "Grade"].map(h => el("th", {}, h)))),
-          el("tbody", {}, exams.map(e => el("tr", {}, el("td", {}, el("a", { href: "#" + e.id, onclick: () => { const d = document.getElementById(e.id); if (d) d.open = true; } }, e.title), el("div", { class: "small" }, `${fmtDate(e.submittedAt)} • ${e.items.length} questions • ${fmtTime(e.durationSec)}`)), el("td", {}, e.max ? `${e.score}/${e.max} (${e.percent}%)` : "-"), el("td", {}, el("span", { class: "grade g" + e.grade }, e.grade))))))));
-      exams.forEach(e => box.append(examDetail(e)));
+      const box = $("#review"); box.innerHTML = "<p class='small'>Loading…</p>";
+      try { exams = (await authed({ action: "list", kid })).exams; }
+      catch (e) { if (e.status === 401) { token = ""; sessionStorage.removeItem("kap:parent:token"); return boot(); } box.innerHTML = ""; box.append(el("p", { class: "panel" }, "Couldn't load exams: " + e.message)); return; }
+      render();
     }
-    function examDetail(e) {
-      const d = el("details", { class: "panel examrev", id: e.id });
-      d.append(el("summary", {}, el("span", { class: "grade g" + e.grade }, e.grade), ` ${e.title} - ${e.max ? e.score + "/" + e.max + " (" + e.percent + "%)" : "no auto-graded questions"} • ${fmtDate(e.submittedAt)}`));
-      d.append(el("p", { class: "small" }, `${e.subtitle} • ${e.items.length} questions • answered ${e.answered} • took ${fmtTime(e.durationSec)}${e.timeLimit ? " (timer " + e.timeLimit + " min)" : ""}${e.selfTotal ? ` • ${e.selfDone}/${e.selfTotal} activities ticked "I did it" (mark them below)` : ""}`));
+    function render(openId) {
+      const box = $("#review"); box.innerHTML = "";
+      const list = exams.filter(e => filter.match(e.startedAt));
+      const done = list.filter(e => e.status !== "in_progress" && e.max);
+      const avg = done.length ? Math.round(done.reduce((a, e) => a + e.percent, 0) / done.length) : null;
+      const toReview = exams.filter(e => e.status === "submitted").length;
+      box.append(el("div", { class: "panel" }, el("h2", {}, `${NAMES[kid]}: ${list.length} exam${list.length === 1 ? "" : "s"}` + (list.length !== exams.length ? ` (of ${exams.length})` : "")),
+        el("p", {}, (toReview ? `🔔 ${toReview} waiting for your review. ` : "") + (avg != null ? `Average: ${avg}% (${avg >= 90 ? "A" : avg >= 80 ? "B" : avg >= 70 ? "C" : avg >= 60 ? "D" : "F"})` : "")),
+        list.length ? el("table", { class: "gradebook" }, el("thead", {}, el("tr", {}, ["Exam", "Score", "Grade"].map(h => el("th", {}, h)))),
+          el("tbody", {}, list.map(e => el("tr", {}, el("td", {}, el("a", { href: "#" + e.id, onclick: () => { const d = document.getElementById(e.id); if (d) d.open = true; } }, e.title), el("div", { class: "small" }, `Started ${e.startedAtChicago}${e.submittedAtChicago ? " • Submitted " + e.submittedAtChicago : ""} • ${e.count} questions`), el("div", { class: "small statusline" }, statusText(e))),
+            el("td", {}, e.max ? `${e.score}/${e.max} (${e.percent}%)` : "-"), el("td", {}, e.status === "in_progress" ? "" : el("span", { class: "grade g" + e.grade }, e.grade)))))) : el("p", { class: "small" }, "No exams for these dates.")));
+      list.forEach(e => box.append(examDetail(e, e.id === openId)));
+    }
+    const statusText = e => e.status === "released" ? "✅ Released to " + NAMES[kid] + " " + (e.releasedAtChicago || "") : e.status === "submitted" ? "🔔 Waiting for your review" : "✏️ In progress (not submitted yet)";
+    async function act(e, body) {
+      try { const r = await authed(Object.assign({ kid, id: e.id }, body)); const i = exams.findIndex(x => x.id === e.id); if (r.exam) exams[i] = r.exam; else if (body.action === "delete") exams.splice(i, 1); render(e.id); const d = document.getElementById(e.id); if (d) d.scrollIntoView({ block: "start" }); }
+      catch (err) { if (err.status === 401) { token = ""; sessionStorage.removeItem("kap:parent:token"); return boot(); } alert(err.message); }
+    }
+    function examDetail(e, open) {
+      const d = el("details", { class: "panel examrev", id: e.id, open: open ? "" : false });
+      d.append(el("summary", {}, e.status === "in_progress" ? null : el("span", { class: "grade g" + e.grade }, e.grade), el("span", {}, ` ${e.title} - ${e.status === "in_progress" ? "in progress" : e.max ? e.score + "/" + e.max + " (" + e.percent + "%)" : "no auto-graded questions"}`), el("span", { class: "badge" }, statusText(e))));
+      d.append(el("p", { class: "small" }, `${e.subtitle} • ${e.count} questions • Started ${e.startedAtChicago}${e.submittedAtChicago ? " • Submitted " + e.submittedAtChicago : ""}${e.durationSec != null ? " • took " + fmtTime(e.durationSec) : ""}${e.timeLimit ? " (timer " + e.timeLimit + " min)" : ""}${e.selfTotal ? ` • ${e.selfDone}/${e.selfTotal} activities ticked "I did it" - mark them below` : ""}`));
+      if (e.status === "in_progress") { d.append(el("button", { type: "button", class: "btn ghost danger", onclick: () => { if (confirm("Delete " + e.title + "?")) act(e, { action: "delete" }); } }, "Delete")); return d; }
       const ol = el("ol", { class: "revlist" });
-      e.items.forEach(id => {
-        const it = index[kid][id]; if (!it) return; const g = e.results[id] || { pts: 0, max: 0 };
-        const ok = g.max ? g.pts === g.max : null; const part = g.max && g.pts > 0 && g.pts < g.max;
-        const li = el("li", { class: ok === null ? "self" : ok ? "ok" : part ? "part" : "no" });
-        li.append(el("div", { class: "rq" }, el("b", {}, ok === null ? "📝 Mom to check" : ok ? "✅ Correct" : part ? `◐ ${g.pts}/${g.max}` : "❌ Incorrect"), g.override ? el("span", { class: "small" }, " (marked by Mom)") : null, " - ", it.q));
-        if (it.type === "chess") li.append(boardEl(it.fen));
-        if (it.type === "notes") li.append(el("div", { html: staffSVG(it.notes) }));
-        if (it.pic) li.append(el("div", { class: "pic small-pic" }, it.pic));
-        li.append(el("div", { class: "small" }, el("b", {}, "Answer given: "), responseText(it, e.responses[id])));
-        if (it.type === "sudoku") li.append(el("div", { class: "small" }, el("b", {}, "Solution:")), el("div", { html: sudokuHTML(it.puzzle, it.answer[0], true) }));
-        else if (!SELF(it.type)) li.append(el("div", { class: "small" }, el("b", {}, "Correct answer: "), answerText(it)));
-        li.append(el("div", { class: "controls" },
-          el("button", { type: "button", class: "btn tiny", onclick: () => override(e, id, true) }, SELF(it.type) ? "Mark done ✓" : "Mark correct"),
-          el("button", { type: "button", class: "btn tiny ghost", onclick: () => override(e, id, false) }, SELF(it.type) ? "Mark not done" : "Mark wrong"),
-          (e.overrides || {})[id] != null ? el("button", { type: "button", class: "btn tiny ghost", onclick: () => override(e, id, null) }, "Undo") : null));
-        ol.append(li);
-      });
+      e.questions.forEach(q => ol.append(resultItem(q, q => {
+        const isSelf = q.type === "open" || q.type === "trace";
+        const note = el("input", { type: "text", class: "ans notein", placeholder: "Note for " + NAMES[kid] + " (optional)", value: q.note || "", maxlength: "300" });
+        note.addEventListener("change", () => act(e, { action: "note", qid: q.id, text: note.value }));
+        return el("div", { class: "controls" },
+          el("button", { type: "button", class: "btn tiny", onclick: () => act(e, { action: "override", qid: q.id, value: true }) }, isSelf ? "Mark done ✓" : "Mark correct"),
+          el("button", { type: "button", class: "btn tiny ghost", onclick: () => act(e, { action: "override", qid: q.id, value: false }) }, isSelf ? "Mark not done" : "Mark wrong"),
+          /marked by Mom/.test(q.label) ? el("button", { type: "button", class: "btn tiny ghost", onclick: () => act(e, { action: "override", qid: q.id, value: null }) }, "Undo") : null, note);
+      })));
       d.append(ol);
-      d.append(el("div", { class: "controls" },
-        el("button", { type: "button", class: "btn ghost", onclick: () => doPrint(examPaperHTML(kid, e, true)) }, "🖨️ Print this exam with answer key"),
-        el("button", { type: "button", class: "btn ghost danger", onclick: () => { if (confirm("Delete " + e.title + "? This cannot be undone.")) { store.set(kid, "exams", store.get(kid, "exams", []).filter(x => x.id !== e.id)); render(); } } }, "Delete exam")));
+      const overall = el("textarea", { class: "ans overall", rows: "2", placeholder: "Overall note for " + NAMES[kid] + " (shown with the results)", maxlength: "1000" }, e.note || "");
+      d.append(el("label", { class: "small" }, "Mom's note"), overall, el("div", { class: "controls" }, el("button", { type: "button", class: "btn tiny ghost", onclick: () => act(e, { action: "note", text: overall.value }) }, "Save note")));
+      d.append(el("div", { class: "controls releasebar" },
+        e.status === "released" ? el("button", { type: "button", class: "btn ghost", onclick: () => act(e, { action: "release", value: false }) }, "↩️ Hide results from " + NAMES[kid]) : el("button", { type: "button", class: "btn big release", onclick: async () => { if (overall.value !== (e.note || "")) await act(e, { action: "note", text: overall.value }); const cur = exams.find(x => x.id === e.id) || e; act(cur, { action: "release", value: true }); } }, "📤 Release to " + NAMES[kid]),
+        el("button", { type: "button", class: "btn ghost", onclick: () => doPrint(examPaperHTML(kid, { title: e.title, subtitle: e.subtitle, items: e.questions.map(q => q.id), timeLimit: e.timeLimit, startedAt: e.startedAt }, e.questions)) }, "🖨️ Print with answer key"),
+        el("button", { type: "button", class: "btn ghost danger", onclick: () => { if (confirm("Delete " + e.title + "? This cannot be undone.")) act(e, { action: "delete" }); } }, "Delete exam")));
       return d;
     }
-    function override(e, id, val) {
-      const exams = store.get(kid, "exams", []); const ex = exams.find(x => x.id === e.id); if (!ex) return;
-      ex.overrides = ex.overrides || {}; if (val == null) delete ex.overrides[id]; else ex.overrides[id] = val;
-      scoreExam(kid, ex); store.set(kid, "exams", exams); render(); const d = document.getElementById(ex.id); if (d) { d.open = true; d.scrollIntoView({ block: "start" }); }
+    async function showKeyPage() {
+      const box = $("#keypage"); box.innerHTML = "<p class='small'>Loading…</p>";
+      try { const k = await authed({ action: "keypage" }); const url = URL.createObjectURL(new Blob([k.svg], { type: "image/svg+xml" })); box.innerHTML = ""; box.append(el("img", { src: url, alt: k.title, class: "keyimg" }), el("details", {}, el("summary", {}, "Show the text of this page"), el("pre", { class: "small", style: "white-space:pre-wrap" }, k.text)), el("button", { type: "button", class: "btn ghost", onclick: () => doPrint(`<img class="pagefull" src="${url}" alt="">`) }, "🖨️ Print the answer key")); }
+      catch (e) { box.innerHTML = ""; box.append(el("p", {}, e.message)); }
     }
-    $$(".kidtabs button").forEach(b => b.addEventListener("click", () => { kid = b.dataset.kid; render(); }));
-    render();
+    async function resetPin() {
+      const p = prompt("To change the PIN, enter the CURRENT parent PIN. You'll then create a new one."); if (!p) return;
+      try { await authed({ action: "reset", pin: p }); token = ""; sessionStorage.removeItem("kap:parent:token"); alert("PIN cleared. Create a new PIN now."); boot(); } catch (e) { alert(e.message); }
+    }
+    $$(".kidtabs button").forEach(b => b.addEventListener("click", () => { kid = b.dataset.kid; loadList(); }));
+    filter = dateFilterEl(() => render()); $("#review-filter").append(filter);
+    $("#lock").addEventListener("click", () => { token = ""; sessionStorage.removeItem("kap:parent:token"); boot(); });
+    $("#change-pin").addEventListener("click", resetPin);
+    $("#refresh").addEventListener("click", loadList);
+    $("#keypage-btn").addEventListener("click", showKeyPage);
+    boot();
   }
 
   const KID = document.body.dataset.kid;

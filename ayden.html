@@ -7,11 +7,11 @@
 <body class="ayden" data-kid="ayden">
 <header class="hero"><a class="home" href="./">← All packs</a><h1>♞ Ayden's Activity Pack</h1><p>Age 8 • 2nd Grade • Chess • Puzzles • Maths • Science • Music • and more</p><p id="progress"></p></header>
 <main class="wrap">
-<nav class="tabs" role="tablist"><button type="button" data-tab="exam-tab" role="tab">📝 Exams</button><button type="button" data-tab="original" role="tab">📄 Original Pack</button></nav>
+<nav class="tabs" role="tablist"><button type="button" data-tab="exam-tab" role="tab">📝 Exam</button><button type="button" data-tab="history-tab" role="tab">📚 My Exams</button><button type="button" data-tab="original" role="tab">📄 Original Pack</button></nav>
 <section id="exam-tab" class="tabpane">
   <div class="panel" id="setup">
     <h2>📝 Set up your exam</h2>
-    <p class="small">Choose subjects, how many questions, and a timer. Then press <b>Start Exam</b>. You get one try - answers are checked after you submit.</p>
+    <p class="small">Choose subjects, how many questions, and a timer. Then press <b>Start Exam</b>. You get one try. Mom checks your answers after you submit.</p>
     <h3>Subjects</h3>
     <div id="cats"></div>
     <div class="controls"><button type="button" class="btn ghost" id="all">Select all</button><button type="button" class="btn ghost" id="none">Clear</button></div>
@@ -20,9 +20,15 @@
       <label>Timer: <select id="timer"><option value="0">No timer</option><option value="5">5 min</option><option value="10" selected>10 min</option><option value="15">15 min</option><option value="20">20 min</option><option value="30">30 min</option><option value="45">45 min</option></select></label>
     </div>
     <div class="controls"><button type="button" class="btn big" id="start">▶️ Start Exam</button></div>
-    <details class="formom"><summary>🔒 For Mom</summary><p><a class="btn alt" href="review.html?kid=ayden">📊 Review Exams &amp; grades</a></p><p>Print a paper exam with the subjects and number of questions above:</p><label><input type="checkbox" id="withkey"> Add the answer key (last page)</label> <button type="button" class="btn ghost" id="print-paper">🖨️ Print paper exam</button></details>
+    <details class="formom"><summary>🔒 For Mom</summary><p><a class="btn alt" href="review.html?kid=ayden">📊 Review Exams &amp; grades</a></p><p>Print a paper exam with the subjects and number of questions above (answer keys are in Review Exams):</p><button type="button" class="btn ghost" id="print-paper">🖨️ Print paper exam</button></details>
   </div>
   <div id="exam"></div>
+</section>
+<section id="history-tab" class="tabpane" hidden>
+  <div class="panel"><h2>📚 My Exams</h2><p class="small">Every exam you've taken, newest first. Results appear after Mom reviews and releases them.</p>
+  <div id="history-filter"></div>
+  <div class="controls"><button type="button" class="btn ghost tiny" id="refresh-history">🔄 Refresh</button><span id="offline-note" class="small" hidden>Offline - showing saved list</span></div></div>
+  <div id="history-list"></div>
 </section>
 <section id="original" class="tabpane" hidden>
   <div class="panel"><h2>The original pack, exactly as printed</h2><p class="small">Every page from the original PDF, unchanged. Tick each activity when finished, or print one page at a time.</p>
@@ -1032,232 +1038,7 @@ Ayden&#x27;s Activity Pack • Work by yourself • Tick the box when you finish
 
 Page 19</pre></details>
 </section>
-<details class="formom"><summary>🔒 For Mom - answer key (Ayden: finish first, no peeking!)</summary>
-<section class="orig key" data-page="20" id="page-20">
-  <h3>Answers - For Mom to check!</h3>
-  <div class="bar"><label class="tick"><input type="checkbox"> Done</label><button type="button" class="btn ghost print-one">🖨️ Print this activity</button></div>
-  <img src="originals/ayden-p20.svg" alt="Answers - For Mom to check! - page 20 of the original pack" loading="lazy" width="612" height="792">
-  <details><summary>Show the text of this page</summary><pre class="small" style="white-space:pre-wrap">Answers - For Mom to check!
-Ayden - please finish first, then check with Mom.
-
-Chess
-• Puzzle A: Knight e4 to f6, check! (Nf6+) The king must move, then Knight takes
-Queen on d7.
-• Puzzle B: Queen g2 takes pawn on g7, checkmate! (Qxg7#)
-
-Sudoku - solution
-1
-
-2
-
-3
-
-4
-
-5
-
-6
-
-7
-
-8
-
-9
-
-4
-
-5
-
-6
-
-7
-
-8
-
-9
-
-1
-
-2
-
-3
-
-7
-
-8
-
-9
-
-1
-
-2
-
-3
-
-4
-
-5
-
-6
-
-2
-
-3
-
-4
-
-5
-
-6
-
-7
-
-8
-
-9
-
-1
-
-5
-
-6
-
-7
-
-8
-
-9
-
-1
-
-2
-
-3
-
-4
-
-8
-
-9
-
-1
-
-2
-
-3
-
-4
-
-5
-
-6
-
-7
-
-3
-
-4
-
-5
-
-6
-
-7
-
-8
-
-9
-
-1
-
-2
-
-6
-
-7
-
-8
-
-9
-
-1
-
-2
-
-3
-
-4
-
-5
-
-9
-
-1
-
-2
-
-3
-
-4
-
-5
-
-6
-
-7
-
-8
-
-Maths
-1. 72 2. 54 3. 94 4. 44 5. 18 6. 20 7. 42 crayons 8. 25 pies
-9. 5 grapes 10. 8 pounds heavier 11. 7 tens + 4 ones 12. 75 cents
-14. 10:00 Riddle: 74
-
-13. 20
-
-Science worksheet
-1. B Winter 2. True 3. True 4. B Bird 5. B Cold 6. C Chocolate
-Ice 8. A Cold 9. B Roots 10. C A metal paperclip
-
-7. A
-
-Music notes
-A. G, B, E, C, A, F (in order). Hot Cross Buns: B A G, B A G, G G G G, A A A A, B A
-G.
-
-Crossword
-Across: 1 APPLE, 3 TURKEY, 6 PIE, 7 DINNER, 8 SNOW. Down: 2 PUMPKIN, 4 YAM, 5 BEAN.
-
-Social studies
-Helpers: 1-c Firefighter, 2-d Teacher, 3-e Doctor, 4-a Mail carrier, 5-b Farmer, 6-f
-Police officer. Needs: food, water, house, clothes. Wants: toy car, video game,
-candy, new bike. Flag: 50 stars, 13 stripes.
-
-Geography
-Treasure map: 1. Park, 2. School, 3. Store. Art colour mixing: red+blue=purple,
-red+yellow=orange, blue+yellow=green, red+white=pink, blue+white=light blue.
-
-Reading passage
-1.
-A A Activity
-chessPack
-tournament,
-2. B His
-chess
-3.finish!
-A A knight fork, 4. Proud and happy
-Ayden&#x27;s
-• Work by yourself
-• Tick
-the boxboard,
-when you
-- because he won using a fork, 5. B Happy with what you did. Name: AYDEN 5 letters,
-PANDEYA 7 letters, whole name 12 letters, vowels 5 (A, E in Ayden; A, E, A in
-
-Page 20</pre></details>
-</section>
-<button type="button" class="btn ghost" id="print-key-orig">🖨️ Print the answer key</button>
-</details>
+<div class="panel small">The answer page of the original pack is kept for Mom in <a href="review.html">Review Exams</a> (parent PIN needed).</div>
 </section>
 </main>
 <footer>Made with love for Ayden • Progress is saved on this device only</footer>

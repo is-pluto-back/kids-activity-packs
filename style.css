@@ -120,3 +120,21 @@ a.btn{text-decoration:none;display:inline-block}
 .revlist .board{width:200px}.revlist .sq{font-size:20px}.small-pic{font-size:1.8rem}
 .revlist .staff{max-width:300px}
 @media print{.examstatus{position:static}}
+/* server-backed review */
+.badge{font-size:.8rem;background:#f3f0ff;border-radius:999px;padding:3px 10px;font-weight:700;margin-left:auto}
+.histcard summary{cursor:pointer;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.histcard.released{border-left:8px solid var(--good)}.histcard.waiting{border-left:8px solid #f0b429}.histcard.inprog{border-left:8px solid #9b8cff}
+.score{font-size:1.2rem;font-weight:900}
+.momnote{background:#fff7e0;border-radius:10px;padding:6px 10px;margin-top:6px;font-weight:700}
+.momnote.big{font-size:1.1rem}
+.revlist li.done{border-color:var(--good);background:#f3fff7}.revlist li.notdone{border-color:#bbb}
+.notein{min-height:36px;padding:6px 8px;font-size:.9rem;flex:1 1 180px}
+.overall{width:100%;font:inherit;padding:8px;border-radius:10px;border:2px solid #d8d2ee}
+.btn.release{background:var(--good)}
+.gatepanel{text-align:center;max-width:420px;margin:30px auto}
+.pinrow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.pin{max-width:160px;text-align:center;font-size:1.4rem;letter-spacing:.3em}
+.datefilter input{font:inherit;padding:6px;border-radius:8px;border:2px solid #d8d2ee}
+.topbar{justify-content:flex-end}
+.keyimg{width:100%;height:auto;border:1px solid #eee;border-radius:8px;margin:8px 0}
+.statusline{font-weight:700}
