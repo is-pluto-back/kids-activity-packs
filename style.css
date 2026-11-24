@@ -86,3 +86,37 @@ footer{text-align:center;color:var(--muted);padding:24px 10px 40px;font-size:.9r
   .pagefull{width:100%;height:auto;break-after:page;display:block}
 }
 .hero #progress{color:#fff}
+/* exam mode */
+.panel h3{margin:.6em 0 .3em;font-size:1rem}
+.choice.picked{background:#e8e2ff;border-color:var(--a);box-shadow:0 0 0 2px var(--a) inset;font-weight:800}
+.btn.big{font-size:1.15rem;padding:14px 22px}
+.btn.tiny{min-height:34px;padding:6px 10px;font-size:.85rem}
+.btn.danger{color:var(--bad)}
+a.btn{text-decoration:none;display:inline-block}
+.examhead{border-bottom:3px solid var(--a)}
+.examstatus{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:rgba(255,248,240,.96);padding:8px 4px;backdrop-filter:blur(4px)}
+.examhead h2{margin:0}
+.timer{font-weight:900;font-size:1.1rem;background:#eef6ff;border-radius:10px;padding:6px 10px}
+.timer.over{background:#fff1e0;color:#b45309}
+.answered{font-weight:800;color:var(--muted)}
+.qcard .status::after{content:"Not answered";margin-left:auto;font-size:.8rem;color:var(--muted)}
+.qcard.answered{border-left-color:#9b8cff}
+.qcard.answered .status::after{content:"✓ Answered";color:var(--a);font-weight:800}
+.qcard .status{margin-left:auto}
+.didit{margin-top:8px}
+.submitbar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.done-panel{text-align:center}.bigemoji{font-size:4rem}
+.inprog{background:#eef6ff}
+.pack.review{border-color:#21b6d1}
+.gradebook{width:100%;border-collapse:collapse;font-size:.92rem}
+.gradebook th,.gradebook td{padding:8px 6px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
+.gradebook td:nth-child(2),.gradebook td:nth-child(3){white-space:nowrap}
+.grade{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;border-radius:50%;font-weight:900;color:#fff;background:#999}
+.grade.gA{background:#1f9d55}.grade.gB{background:#2f7ae5}.grade.gC{background:#f0b429}.grade.gD{background:#f97316}.grade.gF{background:#d64545}
+.examrev summary{cursor:pointer;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.revlist{padding-left:22px}
+.revlist li{margin:10px 0;padding:10px;border-radius:12px;background:#fafafa;border-left:6px solid #ccc}
+.revlist li.ok{border-color:var(--good);background:#f3fff7}.revlist li.no{border-color:var(--bad);background:#fff5f5}.revlist li.part{border-color:#f0b429}.revlist li.self{border-color:#9b8cff}
+.revlist .board{width:200px}.revlist .sq{font-size:20px}.small-pic{font-size:1.8rem}
+.revlist .staff{max-width:300px}
+@media print{.examstatus{position:static}}
