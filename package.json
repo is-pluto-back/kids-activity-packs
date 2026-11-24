@@ -1,0 +1,8 @@
+{
+  "name": "kids-activity-packs",
+  "private": true,
+  "description": "Static exam site for Ayden and Aarya with Vercel Functions + private Vercel Blob storage",
+  "dependencies": {
+    "@vercel/blob": "^2.9.0"
+  }
+}
