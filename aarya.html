@@ -1,29 +1,28 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aarya's Activity Pack | Problem Bank</title>
-<meta name="description" content="Aarya's activity pack - 374 practice problems to shuffle, solve and print, plus the original pack.">
+<title>Aarya's Activity Pack | Exams</title>
+<meta name="description" content="Aarya's activity pack - 374 exam questions to take on screen or print, plus the original pack.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦄</text></svg>">
 <link rel="stylesheet" href="style.css"></head>
 <body class="aarya" data-kid="aarya">
 <header class="hero"><a class="home" href="./">← All packs</a><h1>🦄 Aarya's Activity Pack</h1><p>Jr Kindergarten • Unicorns • Tracing • Letters • Counting • Shapes</p><p id="progress"></p></header>
 <main class="wrap">
-<nav class="tabs" role="tablist"><button type="button" data-tab="practice" role="tab">🎲 Problem Bank &amp; Shuffle</button><button type="button" data-tab="original" role="tab">📄 Original Pack</button></nav>
-<section id="practice" class="tabpane">
-  <div class="panel">
-    <h2>1. Pick categories</h2>
+<nav class="tabs" role="tablist"><button type="button" data-tab="exam-tab" role="tab">📝 Exams</button><button type="button" data-tab="original" role="tab">📄 Original Pack</button></nav>
+<section id="exam-tab" class="tabpane">
+  <div class="panel" id="setup">
+    <h2>📝 Set up your exam</h2>
+    <p class="small">Choose subjects, how many questions, and a timer. Then press <b>Start Exam</b>. You get one try - answers are checked after you submit.</p>
+    <h3>Subjects</h3>
     <div id="cats"></div>
     <div class="controls"><button type="button" class="btn ghost" id="all">Select all</button><button type="button" class="btn ghost" id="none">Clear</button></div>
-    <h2 style="margin-top:14px">2. Shuffle a mixed set</h2>
     <div class="controls">
-      <label>How many? <select id="howmany"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>30</option></select></label>
-      <label class="chip"><input type="checkbox" id="fresh" checked> Only ones not done yet</label>
-      <button type="button" class="btn" id="shuffle">🎲 Shuffle!</button>
-      <button type="button" class="btn alt" id="print-set">🖨️ Print worksheet</button>
+      <label>Questions: <select id="howmany"><option>5</option><option selected>10</option><option>15</option><option>20</option><option>30</option></select></label>
+      <label>Timer: <select id="timer"><option value="0">No timer</option><option value="5">5 min</option><option value="10" selected>10 min</option><option value="15">15 min</option><option value="20">20 min</option><option value="30">30 min</option><option value="45">45 min</option></select></label>
     </div>
-    <label class="chip"><input type="checkbox" id="withkey"> Add answer key when printing (for grown-ups)</label>
-    <div class="controls"><span id="set-progress"></span><button type="button" class="btn ghost" id="reset" style="margin-left:auto">Reset progress</button></div>
+    <div class="controls"><button type="button" class="btn big" id="start">▶️ Start Exam</button></div>
+    <details class="formom"><summary>🔒 For Mom</summary><p><a class="btn alt" href="review.html?kid=aarya">📊 Review Exams &amp; grades</a></p><p>Print a paper exam with the subjects and number of questions above:</p><label><input type="checkbox" id="withkey"> Add the answer key (last page)</label> <button type="button" class="btn ghost" id="print-paper">🖨️ Print paper exam</button></details>
   </div>
-  <div id="set"></div>
+  <div id="exam"></div>
 </section>
 <section id="original" class="tabpane" hidden>
   <div class="panel"><h2>The original pack, exactly as printed</h2><p class="small">Every page from the original PDF, unchanged. Tick each activity when finished, or print one page at a time.</p>
